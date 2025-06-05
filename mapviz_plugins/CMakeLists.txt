@@ -10,14 +10,22 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(
-    ${CMAKE_VERSION} VERSION_EQUAL "3.11.0"
-    OR ${CMAKE_VERSION} VERSION_GREATER "3.11.0"
+    ${CMAKE_VERSION}
+        VERSION_EQUAL
+        "3.11.0"
+    OR ${CMAKE_VERSION}
+        VERSION_GREATER
+        "3.11.0"
 )
     cmake_policy(SET CMP0072 NEW)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
 endif()
 ### END CMAKE POLICIES ###
 
@@ -57,7 +65,13 @@ find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 add_definitions(-DWFlags=WindowFlags)
 
-find_package(OpenCV COMPONENTS core imgproc REQUIRED)
+find_package(
+    OpenCV
+    COMPONENTS
+        core
+        imgproc
+    REQUIRED
+)
 
 ### OpenGL ###
 find_package(OpenGL REQUIRED)
@@ -158,7 +172,13 @@ set(HEADER_FILES
 qt5_wrap_ui(UI_SRC_FILES ${UI_FILES})
 qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
 
-add_library(${PROJECT_NAME} SHARED ${MOC_FILES} ${SRC_FILES} ${UI_SRC_FILES})
+add_library(
+    ${PROJECT_NAME}
+    SHARED
+    ${MOC_FILES}
+    ${SRC_FILES}
+    ${UI_SRC_FILES}
+)
 
 target_include_directories(
     ${PROJECT_NAME}
@@ -169,7 +189,8 @@ target_include_directories(
 
 target_compile_definitions(
     ${PROJECT_NAME}
-    PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS"
+    PUBLIC
+        "PLUGINLIB__DISABLE_BOOST_FUNCTIONS"
 )
 
 # Iron and later switched some cv_bridge files to .hpp from .h
@@ -217,23 +238,30 @@ target_include_directories(${PROJECT_NAME} INTERFACE ${swri_roscpp_TARGETS})
 
 ### Install the plugins ###
 install(
-    DIRECTORY include/
+    DIRECTORY
+        include/
     DESTINATION include/${PROJECT_NAME}
     FILES_MATCHING
-    PATTERN "*.h"
+    PATTERN
+    "*.h"
 )
 
 install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/ui_topicselect.h
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/ui_topicselect.h
     DESTINATION include/${PROJECT_NAME}
 )
 
 install(
-    TARGETS ${PROJECT_NAME}
+    TARGETS
+        ${PROJECT_NAME}
     EXPORT export_${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
 )
 
 pluginlib_export_plugin_description_file(mapviz mapviz_plugins.xml)

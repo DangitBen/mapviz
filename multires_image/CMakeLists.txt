@@ -10,14 +10,22 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(
-    ${CMAKE_VERSION} VERSION_EQUAL "3.11.0"
-    OR ${CMAKE_VERSION} VERSION_GREATER "3.11.0"
+    ${CMAKE_VERSION}
+        VERSION_EQUAL
+        "3.11.0"
+    OR ${CMAKE_VERSION}
+        VERSION_GREATER
+        "3.11.0"
 )
     cmake_policy(SET CMP0072 NEW)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
 endif()
 ### END CMAKE POLICIES ###
 
@@ -75,8 +83,14 @@ target_link_libraries(
 )
 
 # Build libmultires_widget
-set(UI_FILES src/QGLMap.ui src/multires_config.ui)
-set(WIDGET_SRC_FILES src/tile_view.cpp src/QGLMap.cpp)
+set(UI_FILES
+    src/QGLMap.ui
+    src/multires_config.ui
+)
+set(WIDGET_SRC_FILES
+    src/tile_view.cpp
+    src/QGLMap.cpp
+)
 
 qt5_wrap_ui(WIDGET_SRC_FILES ${UI_FILES})
 qt5_wrap_cpp(WIDGET_SRC_FILES include/${PROJECT_NAME}/QGLMap.h)
@@ -95,10 +109,18 @@ target_link_libraries(
 set(VIEW_NODE_SRC_FILES src/nodes/multires_view_node.cpp)
 qt5_wrap_cpp(VIEW_NODE_SRC_FILES include/${PROJECT_NAME}/multires_view_node.h)
 add_executable(multires_view_node ${VIEW_NODE_SRC_FILES})
-target_link_libraries(multires_view_node PUBLIC multires_widget rclcpp::rclcpp)
+target_link_libraries(
+    multires_view_node
+    PUBLIC
+        multires_widget
+        rclcpp::rclcpp
+)
 
 # Build mapviz plugin
-set(MAPVIZ_SRC_FILES src/${PROJECT_NAME}_plugin.cpp src/multires_view.cpp)
+set(MAPVIZ_SRC_FILES
+    src/${PROJECT_NAME}_plugin.cpp
+    src/multires_view.cpp
+)
 qt5_wrap_ui(MAPVIZ_SRC_FILES src/multires_config.ui)
 qt5_wrap_cpp(MAPVIZ_SRC_FILES include/${PROJECT_NAME}/${PROJECT_NAME}_plugin.h)
 
@@ -106,15 +128,20 @@ add_library(${PROJECT_NAME}_plugin SHARED ${MAPVIZ_SRC_FILES})
 
 target_link_libraries(
     ${PROJECT_NAME}_plugin
-    PUBLIC ${PROJECT_NAME} multires_widget ${mapviz_TARGETS}
+    PUBLIC
+        ${PROJECT_NAME}
+        multires_widget
+        ${mapviz_TARGETS}
 )
 
 ### Install ${PROJECT_NAME} plugin ###
 install(
-    DIRECTORY include/
+    DIRECTORY
+        include/
     DESTINATION include/${PROJECT_NAME}
     FILES_MATCHING
-    PATTERN "*.h"
+    PATTERN
+    "*.h"
 )
 
 # Install executables/nodes
@@ -122,21 +149,30 @@ install(TARGETS multires_view_node DESTINATION lib/${PROJECT_NAME})
 
 # Install and export libraries
 install(
-    TARGETS ${PROJECT_NAME} multires_widget ${PROJECT_NAME}_plugin
+    TARGETS
+        ${PROJECT_NAME}
+        multires_widget
+        ${PROJECT_NAME}_plugin
     EXPORT export_${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
 )
 
 install(PROGRAMS nodes/mapviz_tile_loader DESTINATION lib/${PROJECT_NAME})
 
 install(
-    DIRECTORY launch
+    DIRECTORY
+        launch
     DESTINATION share/${PROJECT_NAME}
     FILES_MATCHING
-    PATTERN ".py"
-    PATTERN ".launch"
+    PATTERN
+    ".py"
+    PATTERN
+    ".launch"
 )
 
 pluginlib_export_plugin_description_file(mapviz mapviz_plugins.xml)

@@ -10,14 +10,22 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(
-    ${CMAKE_VERSION} VERSION_EQUAL "3.11.0"
-    OR ${CMAKE_VERSION} VERSION_GREATER "3.11.0"
+    ${CMAKE_VERSION}
+        VERSION_EQUAL
+        "3.11.0"
+    OR ${CMAKE_VERSION}
+        VERSION_GREATER
+        "3.11.0"
 )
     cmake_policy(SET CMP0072 NEW)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
 endif()
 ### END CMAKE POLICIES ###
 
@@ -25,7 +33,8 @@ project(
     mapviz
     DESCRIPTION
         "Mapviz is a ROS based visualization tool with a plug-in system similar to RVIZ focused on visualizing 2D data."
-    LANGUAGES CXX
+    LANGUAGES
+        CXX
 )
 
 find_package(ament_cmake REQUIRED)
@@ -34,7 +43,15 @@ find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(mapviz_interfaces REQUIRED)
-find_package(OpenCV COMPONENTS core imgproc imgcodecs videoio REQUIRED)
+find_package(
+    OpenCV
+    COMPONENTS
+        core
+        imgproc
+        imgcodecs
+        videoio
+    REQUIRED
+)
 find_package(OpenGL REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
@@ -53,7 +70,10 @@ find_package(tf2_ros REQUIRED)
 
 ### PkgConfig ###
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(YamlCpp yaml-cpp)
+pkg_check_modules(
+    YamlCpp
+    yaml-cpp
+)
 
 # ### Qt5 on ROS2 ###
 add_definitions(-DWFlags=WindowFlags)
@@ -63,7 +83,11 @@ set(QT_USE_QTOPENGL TRUE)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Qt UI files
-set(UI_FILES ui/configitem.ui ui/mapviz.ui ui/pluginselect.ui)
+set(UI_FILES
+    ui/configitem.ui
+    ui/mapviz.ui
+    ui/pluginselect.ui
+)
 # Headers containing QObject definitions
 set(HEADER_FILES
     include/${PROJECT_NAME}/color_button.h
@@ -147,7 +171,9 @@ target_link_libraries(
 
 set_target_properties(
     rqt_${PROJECT_NAME}
-    PROPERTIES COMPILE_FLAGS "-D__STDC_FORMAT_MACROS"
+    PROPERTIES
+        COMPILE_FLAGS
+            "-D__STDC_FORMAT_MACROS"
 )
 
 ### Build mapviz as a standalone executable ###
@@ -155,33 +181,46 @@ add_executable(${PROJECT_NAME} src/${PROJECT_NAME}_main.cpp)
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC rqt_${PROJECT_NAME} ${GLU_LIBRARY} ${swri_transform_util_TARGETS}
+    PUBLIC
+        rqt_${PROJECT_NAME}
+        ${GLU_LIBRARY}
+        ${swri_transform_util_TARGETS}
 )
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE image_transport::image_transport ${swri_math_util_TARGETS}
+    PRIVATE
+        image_transport::image_transport
+        ${swri_math_util_TARGETS}
 )
 set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES COMPILE_FLAGS "-D__STDC_FORMAT_MACROS"
+    PROPERTIES
+        COMPILE_FLAGS
+            "-D__STDC_FORMAT_MACROS"
 )
 
 ### Install mapviz ###
 install(
-    DIRECTORY include/
+    DIRECTORY
+        include/
     DESTINATION include/${PROJECT_NAME}
     FILES_MATCHING
-    PATTERN "*.h"
+    PATTERN
+    "*.h"
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 
 install(
-    TARGETS rqt_${PROJECT_NAME}
+    TARGETS
+        rqt_${PROJECT_NAME}
     EXPORT export_${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})

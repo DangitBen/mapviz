@@ -10,14 +10,22 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(
-    ${CMAKE_VERSION} VERSION_EQUAL "3.11.0"
-    OR ${CMAKE_VERSION} VERSION_GREATER "3.11.0"
+    ${CMAKE_VERSION}
+        VERSION_EQUAL
+        "3.11.0"
+    OR ${CMAKE_VERSION}
+        VERSION_GREATER
+        "3.11.0"
 )
     cmake_policy(SET CMP0072 NEW)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
 endif()
 ### END CMAKE POLICIES ###
 
@@ -49,7 +57,10 @@ find_package(GLEW REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 ### yaml-cpp ###
-pkg_check_modules(YamlCpp yaml-cpp)
+pkg_check_modules(
+    YamlCpp
+    yaml-cpp
+)
 
 ### Use PkgConfig to find jsoncpp ###
 pkg_check_modules(JSONCPP REQUIRED jsoncpp)
@@ -111,18 +122,25 @@ add_library(${PROJECT_NAME}_plugin SHARED ${PLUGIN_SRC_FILES})
 target_link_libraries(${PROJECT_NAME}_plugin ${PROJECT_NAME})
 
 install(
-    DIRECTORY include/
+    DIRECTORY
+        include/
     DESTINATION include/${PROJECT_NAME}
     FILES_MATCHING
-    PATTERN "*.h"
+    PATTERN
+    "*.h"
 )
 
 install(
-    TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_plugin
+    TARGETS
+        ${PROJECT_NAME}
+        ${PROJECT_NAME}_plugin
     EXPORT export_${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib
 )
 
 pluginlib_export_plugin_description_file(mapviz mapviz_plugins.xml)
